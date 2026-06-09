@@ -62,7 +62,7 @@ public class ImageData {
             if (width != workingWidth || height != workingHeight) {
                 workingWidth = width;
                 workingHeight = height;
-                ImageManager.saveBufferedImageAsIdentifier(scaleImage(baseImage, width, height), workingIdentifier);
+                ImageManager.saveBufferedImageAsIdentifier(ImageManager.scaleImage(baseImage, width, height), workingIdentifier);
             }
 
             return workingIdentifier;
@@ -75,20 +75,17 @@ public class ImageData {
                 bufferedImage = baseImage;
             } else {
                 identifier = baseIdentifier.withSuffixedPath("_"+width+"x"+height);
-                bufferedImage = scaleImage(baseImage, width, height);
+                bufferedImage = ImageManager.scaleImage(baseImage, width, height);
             }
 
             if (identifier == null)
                 return null;
 
-            if (loadingImages.contains(identifier))
+            if (!loadingImages.add(identifier))
                 return identifier;
 
-            loadingImages.add(identifier);
-
             ImageManager.saveBufferedImageAsIdentifierAsync(bufferedImage, identifier).handleAsync((v, e) -> {
-                if (e != null)
-                {
+                if (e != null) {
                     loadingImages.remove(identifier);
                     return null;
                 }
