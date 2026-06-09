@@ -48,9 +48,9 @@ public class PaintingRenderer {
     }
     */
 
-    public void renderOrQueuePainting(MatrixStack matrices, OrderedRenderCommandQueue queue, PaintingInfo info, int light) {
+    public boolean renderOrQueuePainting(MatrixStack matrices, OrderedRenderCommandQueue queue, PaintingInfo info, int light) {
         Identifier image = info.getImageIdentifier();
-        if (!ImageManager.hasImage(image)) return;
+        if (!ImageManager.hasImage(image)) return false;
 
         matrices.push();
         matrices.translate(info.offsetVec.x, info.offsetVec.y, info.offsetVec.z);
@@ -67,6 +67,7 @@ public class PaintingRenderer {
             renderPainting(matrices, queue, info, light, RenderLayers.entityCutout(info.getImageIdentifier()));
         }
         matrices.pop();
+        return true;
     }
 
     private void renderPainting(MatrixStack matrices, OrderedRenderCommandQueue queue, PaintingInfo info, int light, RenderLayer renderLayer) {
